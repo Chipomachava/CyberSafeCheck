@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.cybersafecheck.database.CyberSafeDatabase
 import com.example.cybersafecheck.databinding.FragmentRiskDetailBinding
-import java.util.UUID
+import kotlinx.coroutines.launch
 
 class RiskDetailFragment : Fragment() {
 
@@ -24,12 +26,16 @@ class RiskDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val itemIdString = arguments?.getString(ARG_ITEM_ID) ?: return
-        val item = RiskLab.getItem(UUID.fromString(itemIdString)) ?: return
+        val id = arguments?.getString(ARG_ID) ?: return
+        val db = CyberSafeDatabase.getDatabase(requireContext())
+        val repo = RiskRepository(db.riskDao())
 
-        binding.detailCategory.text = item.category.name.replace("_", " ")
-        binding.detailQuestion.text = item.question
-        binding.detailExplanation.text = item.explanation
+        viewLifecycleOwner.lifecycleScope.launch {
+            val item = repo.getById(id) ?: return@launch
+            binding.detailCategory.text = item.category.replace("_", " ")
+            binding.detailQuestion.text = item.question
+            binding.detailExplanation.text = item.explanation
+        }
     }
 
     override fun onDestroyView() {
@@ -38,14 +44,10 @@ class RiskDetailFragment : Fragment() {
     }
 
     companion object {
-        private const val ARG_ITEM_ID = "arg_item_id"
+        private const val ARG_ID = "item_id"
 
-        fun newInstance(itemId: UUID): RiskDetailFragment {
-            return RiskDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_ITEM_ID, itemId.toString())
-                }
-            }
+        fun newInstance(id: String) = RiskDetailFragment().apply {
+            arguments = Bundle().apply { putString(ARG_ID, id) }
         }
     }
 }
