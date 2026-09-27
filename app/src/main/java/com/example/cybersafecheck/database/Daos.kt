@@ -18,6 +18,10 @@ interface RiskDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<RiskAnswerEntity>)
+
+    // Milestone 3: clears every answer (used by "Reset Checklist")
+    @Query("UPDATE risk_answers SET isFlagged = 0")
+    suspend fun resetAll()
 }
 
 @Dao

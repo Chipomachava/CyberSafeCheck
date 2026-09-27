@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">CyberSafeCheck</string>
+
+    <!-- Milestone 3: checklist buttons -->
+    <string name="calculate_score">Calculate My Score</string>
+    <string name="reset_checklist">Reset Checklist</string>
+    <string name="view_history">View History</string>
+
+    <!-- Milestone 3: score dialog -->
+    <string name="score_title">Your Risk Score</string>
+    <string name="score_loading">Calculating…</string>
+    <string name="save_to_history">Save to History</string>
+    <string name="close">Close</string>
+    <string name="assessment_saved">Assessment saved to history</string>
+
+    <!-- Milestone 3: reset dialog -->
+    <string name="reset_title">Reset checklist?</string>
+    <string name="reset_message">This will clear all your answers. Your saved history will not be affected.</string>
+    <string name="reset_confirm">Reset</string>
+    <string name="cancel">Cancel</string>
+    <string name="checklist_reset_done">Checklist cleared</string>
+
+    <!-- Milestone 3: history screen -->
+    <string name="history_title">Assessment History</string>
+    <string name="history_empty">No saved assessments yet.\nCalculate your score and tap \"Save to History\".</string>
 </resources>

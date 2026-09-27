@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/checklistFragment">
+
+    <!-- Start screen: the checklist -->
+    <fragment
+        android:id="@+id/checklistFragment"
+        android:name="com.example.cybersafecheck.ChecklistFragment"
+        android:label="Checklist"
+        tools:layout="@layout/fragment_checklist">
+
+        <action
+            android:id="@+id/action_checklist_to_detail"
+            app:destination="@id/riskDetailFragment" />
+
+        <action
+            android:id="@+id/action_checklist_to_history"
+            app:destination="@id/historyFragment" />
+    </fragment>
+
+    <!-- Detail screen: receives the tapped item's ID -->
+    <fragment
+        android:id="@+id/riskDetailFragment"
+        android:name="com.example.cybersafecheck.RiskDetailFragment"
+        android:label="Risk Detail"
+        tools:layout="@layout/fragment_risk_detail">
+
+        <argument
+            android:name="item_id"
+            app:argType="string" />
+    </fragment>
+
+    <!-- History screen: past saved assessments -->
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.cybersafecheck.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history" />
+
+</navigation>

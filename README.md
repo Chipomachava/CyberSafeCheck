@@ -60,6 +60,33 @@ Milestone 2 transitions the application from in-memory seed models to an offline
 
 ---
 
+## Milestone 3: Navigation Graph, Scoring & History
+
+Milestone 3 replaces manual FragmentManager transactions with the Jetpack Navigation component and adds the score-calculation flow using two dialog patterns, plus a history screen backed by the Milestone 2 Room database.
+
+### Features Implemented
+
+* **Navigation Component:**
+* `nav_graph.xml`: Destinations for `ChecklistFragment` (start), `RiskDetailFragment` (with an `item_id` string argument) and `HistoryFragment`, connected by actions.
+* `activity_main.xml` hosts a `NavHostFragment` (`FragmentContainerView`) in place of the Milestone 1 `FrameLayout` swap; `MainActivity` no longer performs fragment transactions.
+* Row taps navigate with `NavController.navigate()`, and the system Back button pops the navigation back stack.
+
+* **Score Calculation (informational dialog):**
+* `ScoreDialogFragment` (a `DialogFragment` built with `MaterialAlertDialogBuilder`) shows the total flagged count and a per-category breakdown (e.g. "Passwords: 1/2 flagged"), computed by `RiskRepository.getScoreSummary()` on `Dispatchers.IO`.
+* "Save to History" inserts an `AssessmentEntity` row through the repository.
+
+* **Reset Checklist (destructive-action confirmation dialog):**
+* `ResetConfirmDialogFragment` asks for confirmation and reports the result to `ChecklistFragment` via the Fragment Result API; only then is `RiskDao.resetAll()` run.
+
+* **Assessment History:**
+* `HistoryFragment` + `fragment_history.xml` list saved assessments (newest first) in a `RecyclerView`, showing date, flagged count and percentage, with an empty-state message. Data persists across app restarts via Room.
+
+### Tagged Release
+
+* Git Tag: `milestone-3`
+
+---
+
 ## Technical Stack
 
 * **Language:** Kotlin
@@ -68,4 +95,5 @@ Milestone 2 transitions the application from in-memory seed models to an offline
 * **Persistence:** Android Jetpack Room 2.6.1
 * **Concurrency:** Kotlin Coroutines (Lifecycle Scope, `Dispatchers.IO`)
 * **UI Toolkit:** ConstraintLayout, RecyclerView, Material Components (MaterialSwitch)
+* **Navigation:** Jetpack Navigation Component 2.8.0 (NavHostFragment, nav graph, DialogFragments)
 * **Architecture:** Repository Pattern, Single Activity with Fragments, ViewBinding

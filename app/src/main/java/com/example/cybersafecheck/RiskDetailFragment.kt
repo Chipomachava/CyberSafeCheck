@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.cybersafecheck.database.CyberSafeDatabase
 import com.example.cybersafecheck.databinding.FragmentRiskDetailBinding
 import kotlinx.coroutines.launch
 
@@ -26,9 +25,9 @@ class RiskDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // The Navigation component puts the "item_id" argument into this Bundle
         val id = arguments?.getString(ARG_ID) ?: return
-        val db = CyberSafeDatabase.getDatabase(requireContext())
-        val repo = RiskRepository(db.riskDao())
+        val repo = RiskRepository.get(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch {
             val item = repo.getById(id) ?: return@launch
@@ -44,10 +43,7 @@ class RiskDetailFragment : Fragment() {
     }
 
     companion object {
-        private const val ARG_ID = "item_id"
-
-        fun newInstance(id: String) = RiskDetailFragment().apply {
-            arguments = Bundle().apply { putString(ARG_ID, id) }
-        }
+        // Must match <argument android:name="item_id"> in nav_graph.xml
+        const val ARG_ID = "item_id"
     }
 }
