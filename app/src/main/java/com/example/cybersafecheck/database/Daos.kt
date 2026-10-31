@@ -19,7 +19,6 @@ interface RiskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<RiskAnswerEntity>)
 
-    // Milestone 3: clears every answer (used by "Reset Checklist")
     @Query("UPDATE risk_answers SET isFlagged = 0")
     suspend fun resetAll()
 }
@@ -31,4 +30,13 @@ interface AssessmentDao {
 
     @Query("SELECT * FROM assessments ORDER BY timestamp DESC")
     suspend fun getAllAssessments(): List<AssessmentEntity>
+}
+
+@Dao
+interface ReportDao {
+    @Insert
+    suspend fun addReport(report: ReportEntity)
+
+    @Query("SELECT * FROM reports ORDER BY timestamp DESC")
+    suspend fun getReports(): List<ReportEntity>
 }

@@ -20,3 +20,11 @@ data class AssessmentEntity(
     val flaggedCount: Int,
     val totalCount: Int
 )
+
+@Entity(tableName = "reports")
+data class ReportEntity(
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    val timestamp: Long = System.currentTimeMillis(),
+    val description: String,
+    val photoUri: String? = null
+)
