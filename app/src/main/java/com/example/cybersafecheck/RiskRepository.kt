@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.cybersafecheck.database.AssessmentDao
 import com.example.cybersafecheck.database.AssessmentEntity
 import com.example.cybersafecheck.database.CyberSafeDatabase
+import com.example.cybersafecheck.database.ReportDao
+import com.example.cybersafecheck.database.ReportEntity
 import com.example.cybersafecheck.database.RiskAnswerEntity
 import com.example.cybersafecheck.database.RiskDao
 import kotlinx.coroutines.Dispatchers
@@ -11,10 +13,9 @@ import kotlinx.coroutines.withContext
 
 class RiskRepository(
     private val riskDao: RiskDao,
-    private val assessmentDao: AssessmentDao
+    private val assessmentDao: AssessmentDao,
+    private val reportDao: ReportDao
 ) {
-
-    // ---------- Risk answers ----------
 
     suspend fun setFlagged(itemId: String, flagged: Boolean) = withContext(Dispatchers.IO) {
         riskDao.updateFlagged(itemId, flagged)
@@ -34,17 +35,14 @@ class RiskRepository(
         existing
     }
 
-    /** Milestone 3: clears every yes/no answer back to "not flagged". */
     suspend fun resetAll() = withContext(Dispatchers.IO) {
         riskDao.resetAll()
     }
 
-    /** Milestone 3: counts flagged answers overall and per category. */
     suspend fun getScoreSummary(): ScoreSummary = withContext(Dispatchers.IO) {
         val items = getAll()
         val perCategory = linkedMapOf<String, Pair<Int, Int>>()
 
-        // Walk the enum so categories always appear in the same order
         RiskCategory.values().forEach { category ->
             val inCategory = items.filter { it.category == category.name }
             if (inCategory.isNotEmpty()) {
@@ -60,8 +58,6 @@ class RiskRepository(
         )
     }
 
-    // ---------- Assessment history ----------
-
     suspend fun saveAssessment(flagged: Int, total: Int) = withContext(Dispatchers.IO) {
         assessmentDao.insertAssessment(
             AssessmentEntity(flaggedCount = flagged, totalCount = total)
@@ -72,7 +68,15 @@ class RiskRepository(
         assessmentDao.getAllAssessments()
     }
 
-    // ---------- Seed data ----------
+    suspend fun addReport(description: String, photoUri: String?) = withContext(Dispatchers.IO) {
+        reportDao.addReport(
+            ReportEntity(description = description, photoUri = photoUri)
+        )
+    }
+
+    suspend fun getReports(): List<ReportEntity> = withContext(Dispatchers.IO) {
+        reportDao.getReports()
+    }
 
     private fun seedItems() = listOf(
         RiskAnswerEntity(
@@ -118,10 +122,9 @@ class RiskRepository(
     )
 
     companion object {
-        /** One-line way for any fragment to get a repository. */
         fun get(context: Context): RiskRepository {
             val db = CyberSafeDatabase.getDatabase(context)
-            return RiskRepository(db.riskDao(), db.assessmentDao())
+            return RiskRepository(db.riskDao(), db.assessmentDao(), db.reportDao())
         }
     }
 }
