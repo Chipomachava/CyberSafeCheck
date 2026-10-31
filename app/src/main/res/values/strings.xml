@@ -1,26 +1,42 @@
 <resources>
     <string name="app_name">CyberSafeCheck</string>
 
-    <!-- Milestone 3: checklist buttons -->
     <string name="calculate_score">Calculate My Score</string>
     <string name="reset_checklist">Reset Checklist</string>
     <string name="view_history">View History</string>
 
-    <!-- Milestone 3: score dialog -->
     <string name="score_title">Your Risk Score</string>
     <string name="score_loading">Calculating…</string>
     <string name="save_to_history">Save to History</string>
     <string name="close">Close</string>
     <string name="assessment_saved">Assessment saved to history</string>
 
-    <!-- Milestone 3: reset dialog -->
     <string name="reset_title">Reset checklist?</string>
     <string name="reset_message">This will clear all your answers. Your saved history will not be affected.</string>
     <string name="reset_confirm">Reset</string>
     <string name="cancel">Cancel</string>
     <string name="checklist_reset_done">Checklist cleared</string>
 
-    <!-- Milestone 3: history screen -->
     <string name="history_title">Assessment History</string>
     <string name="history_empty">No saved assessments yet.\nCalculate your score and tap \"Save to History\".</string>
+
+    <string name="menu_checklist">Checklist</string>
+    <string name="menu_history">History</string>
+    <string name="menu_report">Report</string>
+
+    <string name="share">Share</string>
+    <string name="share_subject">My CyberSafeCheck Score</string>
+    <string name="share_chooser">Share score via</string>
+    <string name="share_text">My CyberSafeCheck digital-footprint score: %1$d of %2$d risky habits flagged (%3$d%%). Check your own online safety habits!</string>
+
+    <string name="report_title">Report Suspicious Content</string>
+    <string name="report_description_hint">Describe what you received, e.g. a phishing SMS or a bullying message</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="save_report">Save Report</string>
+    <string name="report_saved">Report saved</string>
+    <string name="report_description_required">Please enter a description first</string>
+    <string name="saved_reports">Saved Reports</string>
+    <string name="reports_empty">No reports saved yet.</string>
+    <string name="report_no_photo">No photo attached</string>
+    <string name="report_photo_description">Evidence photo</string>
 </resources>
