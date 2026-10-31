@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/brand_blue"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
