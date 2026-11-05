@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val REMINDER_INTERVAL = 15L
-        private val REMINDER_INTERVAL_UNIT = TimeUnit.MINUTES
+        private const val REMINDER_INTERVAL = 30L
+        private val REMINDER_INTERVAL_UNIT = TimeUnit.DAYS
     }
 }
