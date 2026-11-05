@@ -22,4 +22,9 @@
         android:title="@string/menu_password_check"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_safety_resources"
+        android:title="@string/menu_safety_resources"
+        app:showAsAction="never" />
+
 </menu>
