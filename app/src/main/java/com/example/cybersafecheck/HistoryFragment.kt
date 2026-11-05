@@ -2,15 +2,24 @@ package com.example.cybersafecheck
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cybersafecheck.database.AssessmentEntity
 import com.example.cybersafecheck.databinding.FragmentHistoryBinding
 import com.example.cybersafecheck.databinding.ListItemAssessmentBinding
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -19,8 +28,13 @@ import java.util.Locale
 class HistoryFragment : Fragment() {
 
     private var _binding: FragmentHistoryBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = checkNotNull(_binding) {
+            "Cannot access binding because it is null. Is the view visible?"
+        }
 
+    private val historyViewModel: HistoryViewModel by viewModels()
+    private var searchView: SearchView? = null
     private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     override fun onCreateView(
@@ -35,18 +49,70 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository = RiskRepository.get(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val assessments = repository.getAllAssessments() // newest first
-            binding.historyRecyclerView.adapter = AssessmentAdapter(assessments)
-            binding.historyEmptyText.visibility =
-                if (assessments.isEmpty()) View.VISIBLE else View.GONE
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                historyViewModel.uiState.collect { state ->
+                    binding.historyRecyclerView.adapter = AssessmentAdapter(state.assessments)
+                    binding.historyEmptyText.text = getString(
+                        if (state.hasAnyAssessments) R.string.history_no_matches
+                        else R.string.history_empty
+                    )
+                    binding.historyEmptyText.visibility =
+                        if (state.assessments.isEmpty()) View.VISIBLE else View.GONE
+                }
+            }
         }
+
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_history, menu)
+
+                val searchItem = menu.findItem(R.id.menu_item_search)
+                val searchBox = searchItem.actionView as SearchView
+                searchView = searchBox
+                searchBox.queryHint = getString(R.string.search_history)
+
+                searchBox.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        historyViewModel.setQuery(query.orEmpty())
+                        searchBox.clearFocus()
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        historyViewModel.setQuery(newText.orEmpty())
+                        return true
+                    }
+                })
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val savedQuery = PreferencesRepository.get().historySearchQuery.first()
+                    if (savedQuery.isNotEmpty() && searchBox.query.isNullOrEmpty()) {
+                        searchBox.isIconified = false
+                        searchBox.setQuery(savedQuery, false)
+                        searchBox.clearFocus()
+                    }
+                }
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.menu_item_clear -> {
+                        searchView?.setQuery("", false)
+                        searchView?.isIconified = true
+                        historyViewModel.setQuery("")
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        searchView = null
         _binding = null
     }
 
