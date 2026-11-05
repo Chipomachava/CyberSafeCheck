@@ -49,4 +49,10 @@
         android:label="@string/menu_password_check"
         tools:layout="@layout/fragment_password_check" />
 
+    <fragment
+        android:id="@+id/resourcesFragment"
+        android:name="com.example.cybersafecheck.ResourcesFragment"
+        android:label="@string/menu_safety_resources"
+        tools:layout="@layout/fragment_resources" />
+
 </navigation>
