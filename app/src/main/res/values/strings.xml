@@ -39,4 +39,19 @@
     <string name="reports_empty">No reports saved yet.</string>
     <string name="report_no_photo">No photo attached</string>
     <string name="report_photo_description">Evidence photo</string>
+
+    <string name="menu_password_check">Password Check</string>
+    <string name="password_check_title">Check a Password</string>
+    <string name="password_check_intro">Your password is hashed on this phone. Only the first 5 characters of its SHA-1 hash are sent to Have I Been Pwned, never the password itself.</string>
+    <string name="password_hint">Password to check</string>
+    <string name="check_exposure">Check Exposure</string>
+    <string name="checking">Checking…</string>
+    <string name="password_empty">Please enter a password</string>
+    <string name="password_not_found">Not found in known breaches</string>
+    <string name="password_found">Found %1$d times, consider changing this password</string>
+    <string name="network_error">Couldn\'t reach the breach service. Check your internet connection and try again.</string>
+
+    <string name="search_history">Search history</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="history_no_matches">No assessments match your search.</string>
 </resources>
