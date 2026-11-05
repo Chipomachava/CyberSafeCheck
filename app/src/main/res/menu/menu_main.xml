@@ -17,4 +17,9 @@
         android:title="@string/menu_report"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_password_check"
+        android:title="@string/menu_password_check"
+        app:showAsAction="never" />
+
 </menu>
