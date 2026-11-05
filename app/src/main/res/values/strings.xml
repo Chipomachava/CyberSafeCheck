@@ -54,4 +54,13 @@
     <string name="search_history">Search history</string>
     <string name="clear_search">Clear Search</string>
     <string name="history_no_matches">No assessments match your search.</string>
+
+    <string name="notification_channel_name">Security Reminders</string>
+    <string name="notification_channel_description">Reminders to re-check your passwords against known data breaches</string>
+    <string name="reminder_title">Time for a password check</string>
+    <string name="reminder_text">Re-check your passwords against known data breaches in CyberSafeCheck.</string>
+    <string name="notifications_denied">Notifications are off, so you won\'t get breach-check reminders.</string>
+
+    <string name="menu_safety_resources">Safety Resources</string>
+    <string name="resources_load_error">Couldn\'t load the page. Check your internet connection.</string>
 </resources>
