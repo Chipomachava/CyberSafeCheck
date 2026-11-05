@@ -58,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.checklistFragment,
                 R.id.historyFragment,
                 R.id.reportFragment,
-                R.id.passwordCheckFragment
+                R.id.passwordCheckFragment,
+                R.id.resourcesFragment
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -98,6 +99,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_password_check -> {
                 openTopLevel(R.id.passwordCheckFragment)
+                true
+            }
+            R.id.menu_safety_resources -> {
+                openTopLevel(R.id.resourcesFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)
