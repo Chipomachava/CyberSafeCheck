@@ -33,7 +33,12 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.checklistFragment, R.id.historyFragment, R.id.reportFragment)
+            setOf(
+                R.id.checklistFragment,
+                R.id.historyFragment,
+                R.id.reportFragment,
+                R.id.passwordCheckFragment
+            )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
 
@@ -64,6 +69,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_report -> {
                 openTopLevel(R.id.reportFragment)
+                true
+            }
+            R.id.menu_password_check -> {
+                openTopLevel(R.id.passwordCheckFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)
