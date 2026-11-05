@@ -1,9 +1,15 @@
 package com.example.cybersafecheck
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -13,13 +19,28 @@ import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.cybersafecheck.databinding.ActivityMainBinding
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private val requestNotificationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Toast.makeText(this, R.string.notifications_denied, Toast.LENGTH_LONG).show()
+        }
+        scheduleBreachCheckReminder()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +70,10 @@ class MainActivity : AppCompatActivity() {
             binding.appBar.updatePadding(top = bars.top)
             view.updatePadding(left = bars.left, right = bars.right, bottom = bars.bottom)
             insets
+        }
+
+        if (savedInstanceState == null) {
+            askForNotificationsThenSchedule()
         }
     }
 
@@ -89,5 +114,43 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun askForNotificationsThenSchedule() {
+        val needsPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+
+        if (needsPermission) {
+            requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            scheduleBreachCheckReminder()
+        }
+    }
+
+    private fun scheduleBreachCheckReminder() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val reminderRequest = PeriodicWorkRequestBuilder<BreachCheckReminderWorker>(
+            REMINDER_INTERVAL,
+            REMINDER_INTERVAL_UNIT
+        )
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            BreachCheckReminderWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.UPDATE,
+            reminderRequest
+        )
+    }
+
+    companion object {
+        private const val REMINDER_INTERVAL = 15L
+        private val REMINDER_INTERVAL_UNIT = TimeUnit.MINUTES
     }
 }
